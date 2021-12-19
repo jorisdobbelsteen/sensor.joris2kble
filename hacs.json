@@ -1,0 +1,5 @@
+{
+  "name": "Joris2k BLE",
+  "domains": [ "sensor" ],  
+  "render_readme": true
+}

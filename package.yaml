@@ -1,0 +1,17 @@
+author:
+  email: joris@familiedobbelsteen.nl
+  homepage: https://github.com/jorisdobbelsteen
+  name: Joris Dobbelsteen
+description: Joris2k BLE devices
+files:
+  - custom_components/joris2kble/__init__.py
+  - custom_components/joris2kble/sensor.py
+keywords:
+  - environmental
+  - homeassistant
+  - home-assistant
+  - custom-component
+  - python
+license: MIT License
+name: sensor.joris2kble
+type: component
