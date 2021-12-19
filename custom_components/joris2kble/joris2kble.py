@@ -126,6 +126,9 @@ class Joris2kBleDetect:
             self._dev = None
 
     def get_info(self):
+        if not self.deviceinfos:
+            for mac in self.devicemacs:
+                self.deviceinfos[mac] = Joris2kBleDeviceInfo(mac=mac, device_name="SmartMeter")
         return self.deviceinfos
 
     def get_sensors(self):

@@ -13,6 +13,7 @@ import voluptuous as vol
 from homeassistant.components.sensor import (
     PLATFORM_SCHEMA,
     STATE_CLASS_MEASUREMENT,
+    STATE_CLASS_TOTAL_INCREASING,
     SensorEntity,
 )
 
@@ -38,10 +39,11 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 
 
 class Sensor:
-    def __init__(self, unit, unit_scale, device_class, icon):
+    def __init__(self, unit, unit_scale, device_class, state_class, icon):
         self.unit = unit
         self.unit_scale = unit_scale
         self.device_class = device_class
+        self.state_class = state_class
         self.icon = icon
 
     def set_parameters(self, parameters):
@@ -59,19 +61,19 @@ class Sensor:
     def get_extra_attributes(self, data):
         return {}
 
-DEVICE_SENSOR_SPECIFICS = { "power_consumption_tariff1": Sensor(ENERGY_KILO_WATT_HOUR, None, DEVICE_CLASS_ENERGY, None),
-                            "power_consumption_tariff2": Sensor(ENERGY_KILO_WATT_HOUR, None, DEVICE_CLASS_ENERGY, None),
-                            "power_delivery_tariff1": Sensor(ENERGY_KILO_WATT_HOUR, None, DEVICE_CLASS_ENERGY, None),
-                            "power_delivery_tariff2": Sensor(ENERGY_KILO_WATT_HOUR, None, DEVICE_CLASS_ENERGY, None),
-                            "current_tariff": Sensor(None, None, None, None),
-                            "gas_consumption": Sensor(VOLUME_CUBIC_METERS, None, DEVICE_CLASS_GAS, None)
+DEVICE_SENSOR_SPECIFICS = { "power_consumption_tariff1": Sensor(ENERGY_KILO_WATT_HOUR, None, DEVICE_CLASS_ENERGY, STATE_CLASS_TOTAL_INCREASING, None),
+                            "power_consumption_tariff2": Sensor(ENERGY_KILO_WATT_HOUR, None, DEVICE_CLASS_ENERGY, STATE_CLASS_TOTAL_INCREASING, None),
+                            "power_delivery_tariff1": Sensor(ENERGY_KILO_WATT_HOUR, None, DEVICE_CLASS_ENERGY, STATE_CLASS_TOTAL_INCREASING, None),
+                            "power_delivery_tariff2": Sensor(ENERGY_KILO_WATT_HOUR, None, DEVICE_CLASS_ENERGY, STATE_CLASS_TOTAL_INCREASING, None),
+                            "current_tariff": Sensor(None, None, None, STATE_CLASS_MEASUREMENT, None),
+                            "gas_consumption": Sensor(VOLUME_CUBIC_METERS, None, DEVICE_CLASS_GAS, STATE_CLASS_TOTAL_INCREASING, None)
                            }
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Joris2k BLE sensor."""
     scan_interval = config.get(CONF_SCAN_INTERVAL).total_seconds()
     mac = config.get(CONF_MAC)
-    mac = None if mac == '' else mac
+    mac = None if mac == '' else mac.lower()
 
     _LOGGER.debug("Searching for Joris2k BLE sensors...")
     detect = Joris2kBleDetect(scan_interval, mac)
@@ -117,8 +119,6 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
 
 class Joris2kBleSensor(SensorEntity):
 
-    _attr_state_class = STATE_CLASS_MEASUREMENT
-
     """General Representation of an Joris2k BLE sensor."""
     def __init__(self, mac, name, device, device_info, sensor_specifics):
         """Initialize a sensor."""
@@ -128,7 +128,6 @@ class Joris2kBleSensor(SensorEntity):
         _LOGGER.debug("Added sensor entity {}".format(self._name))
         self._sensor_name = name
 
-        self._device_class = sensor_specifics.device_class
         self._state = STATE_UNKNOWN
         self._sensor_specifics = sensor_specifics
 
@@ -141,6 +140,11 @@ class Joris2kBleSensor(SensorEntity):
     def state(self):
         """Return the state of the device."""
         return self._state
+
+    @property
+    def state_class(self):
+        """Return the state class of the device."""
+        return self._sensor_specifics.state_class
 
     @property
     def icon(self):
