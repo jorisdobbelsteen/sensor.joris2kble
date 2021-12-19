@@ -59,14 +59,13 @@ class Sensor:
     def get_extra_attributes(self, data):
         return {}
 
-DEVICE_SENSOR_SPECIFICS = { "power_consumption_tariff1": Sensor(ENERGY_KILO_WATT_HOUR:, None, DEVICE_CLASS_ENERGY, None),
-                            "power_consumption_tariff2": Sensor(ENERGY_KILO_WATT_HOUR:, None, DEVICE_CLASS_ENERGY, None),
-                            "power_delivery_tariff1": Sensor(ENERGY_KILO_WATT_HOUR:, None, DEVICE_CLASS_ENERGY, None),
-                            "power_delivery_tariff2": Sensor(ENERGY_KILO_WATT_HOUR:, None, DEVICE_CLASS_ENERGY, None),
+DEVICE_SENSOR_SPECIFICS = { "power_consumption_tariff1": Sensor(ENERGY_KILO_WATT_HOUR, None, DEVICE_CLASS_ENERGY, None),
+                            "power_consumption_tariff2": Sensor(ENERGY_KILO_WATT_HOUR, None, DEVICE_CLASS_ENERGY, None),
+                            "power_delivery_tariff1": Sensor(ENERGY_KILO_WATT_HOUR, None, DEVICE_CLASS_ENERGY, None),
+                            "power_delivery_tariff2": Sensor(ENERGY_KILO_WATT_HOUR, None, DEVICE_CLASS_ENERGY, None),
                             "current_tariff": Sensor(None, None, None, None),
-                            "gas_consumption": Sensor(VOLUME_CUBIC_METERS, None, DEVICE_CLASS_GAS, None),
+                            "gas_consumption": Sensor(VOLUME_CUBIC_METERS, None, DEVICE_CLASS_GAS, None)
                            }
-
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the Joris2k BLE sensor."""
